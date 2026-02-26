@@ -54,3 +54,11 @@ Examples:
   - `cscript //nologo test.js --debug`
 
 This avoids relying on Wine XMLHTTP binary response behavior, which can return inconsistent results for some files.
+
+## Local CI (Dev)
+
+To run the GitHub Actions build job locally with `act`, use:
+
+- `tools\run-act-build.bat`
+
+This wrapper runs the `linux-cross-win32` job from `.github/workflows/build.yml`.
