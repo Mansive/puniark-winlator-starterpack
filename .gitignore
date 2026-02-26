@@ -1,0 +1,9 @@
+build/
+downloads/
+executables/
+
+.cmake/
+.act-artifacts/
+
+*.exe
+CMakeUserPresets.json
