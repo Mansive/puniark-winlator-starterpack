@@ -117,11 +117,11 @@ add_custom_command(
           -DCONFIG_TEMPLATE=${PROJECT_SOURCE_DIR}/src/frida/frida-gadget.config
           -P "${PROJECT_SOURCE_DIR}/cmake/copy_frida_gadget_assets.cmake"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-          "${PROJECT_SOURCE_DIR}/tools/run-bitnessscan.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/run-bitnessscan.bat"
+          "${PROJECT_SOURCE_DIR}/tools/AUTOMATIC.bat"
+          "${BITNESSSCAN_OUTPUT_DIR}/AUTOMATIC.bat"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-          "${PROJECT_SOURCE_DIR}/tools/run-bitnessscan-picker.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/run-bitnessscan-picker.bat"
+          "${PROJECT_SOURCE_DIR}/tools/PICKER.bat"
+          "${BITNESSSCAN_OUTPUT_DIR}/PICKER.bat"
   COMMAND ${CMAKE_COMMAND} -E rm -f "${BITNESSSCAN_OUTPUT_DIR}/build-bitnessscan-x86.bat"
   VERBATIM
 )
