@@ -1,5 +1,3 @@
-include tools/tool-versions.env
-
 CROSS ?= 0
 
 ifeq ($(CROSS),1)
@@ -10,7 +8,7 @@ CONFIGURE_MODE :=
 MESON_BUILD_DIR := .meson/build/mingw-win32-local
 endif
 
-MESON := uv tool run --python "$(PYTHON_VERSION)" --from "meson==$(MESON_VERSION)" --with ninja meson
+MESON := uv run --group build meson
 
 .PHONY: all configure compile bundle clean test distclean
 

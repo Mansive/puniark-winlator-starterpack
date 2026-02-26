@@ -3,31 +3,6 @@ setlocal EnableDelayedExpansion
 
 set "ROOT_DIR=%~dp0"
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
-set "VERSIONS_FILE=%ROOT_DIR%\tools\tool-versions.env"
-
-if not exist "%VERSIONS_FILE%" (
-  echo Missing tool versions file: "%VERSIONS_FILE%"
-  exit /b 1
-)
-
-for /f "usebackq tokens=1,2 delims==" %%A in ("%VERSIONS_FILE%") do (
-  if not "%%~A"=="" (
-    set "_KEY=%%~A"
-    if not "!_KEY:~0,1!"=="#" (
-      set "%%~A=%%~B"
-    )
-  )
-)
-
-if not defined PYTHON_VERSION (
-  echo PYTHON_VERSION is missing in "%VERSIONS_FILE%"
-  exit /b 1
-)
-
-if not defined MESON_VERSION (
-  echo MESON_VERSION is missing in "%VERSIONS_FILE%"
-  exit /b 1
-)
 
 where uv >nul 2>nul
 if errorlevel 1 (
@@ -60,20 +35,12 @@ if "%CROSS_MODE%"=="1" (
 
 pushd "%ROOT_DIR%" >nul
 
-echo Installing Python %PYTHON_VERSION% with uv
-uv python install "%PYTHON_VERSION%"
-if errorlevel 1 (
-  popd >nul
-  echo Python installation failed.
-  exit /b 1
-)
-
 if exist "%BUILD_DIR%\build.ninja" (
   echo Reconfiguring Meson build directory: %BUILD_DIR%
-  uv tool run --python "%PYTHON_VERSION%" --from "meson==%MESON_VERSION%" --with ninja meson setup --reconfigure "%BUILD_DIR%" %CROSS_ARGS% %PASSTHROUGH_ARGS%
+  uv run --group build meson setup --reconfigure "%BUILD_DIR%" %CROSS_ARGS% %PASSTHROUGH_ARGS%
 ) else (
   echo Configuring Meson build directory: %BUILD_DIR%
-  uv tool run --python "%PYTHON_VERSION%" --from "meson==%MESON_VERSION%" --with ninja meson setup "%BUILD_DIR%" --buildtype release %CROSS_ARGS% %PASSTHROUGH_ARGS%
+  uv run --group build meson setup "%BUILD_DIR%" --buildtype release %CROSS_ARGS% %PASSTHROUGH_ARGS%
 )
 
 set "EXIT_CODE=%ERRORLEVEL%"

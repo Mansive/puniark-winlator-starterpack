@@ -58,7 +58,7 @@ This avoids relying on Wine XMLHTTP binary response behavior, which can return i
 ## Build bitnessscan (Dev)
 
 The project uses Meson + Ninja, wrapped by helper scripts.
-Pinned versions are defined in `tools/tool-versions.env`.
+Pinned versions are defined in `pyproject.toml` (`[dependency-groups].build`) and locked in `uv.lock`.
 
 Prerequisites:
 
@@ -79,6 +79,11 @@ Prerequisites:
   - `compile`: build executable only
   - `clean`: clean current Meson build directory
   - `distclean`: remove local build and dist outputs
+
+Direct uv usage (without wrappers):
+
+- `uv run --group build meson setup ...`
+- `uv run --group build meson compile -C <build-dir> bundle`
 
 Examples:
 

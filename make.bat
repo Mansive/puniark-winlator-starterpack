@@ -3,31 +3,6 @@ setlocal EnableDelayedExpansion
 
 set "ROOT_DIR=%~dp0"
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
-set "VERSIONS_FILE=%ROOT_DIR%\tools\tool-versions.env"
-
-if not exist "%VERSIONS_FILE%" (
-  echo Missing tool versions file: "%VERSIONS_FILE%"
-  exit /b 1
-)
-
-for /f "usebackq tokens=1,2 delims==" %%A in ("%VERSIONS_FILE%") do (
-  if not "%%~A"=="" (
-    set "_KEY=%%~A"
-    if not "!_KEY:~0,1!"=="#" (
-      set "%%~A=%%~B"
-    )
-  )
-)
-
-if not defined PYTHON_VERSION (
-  echo PYTHON_VERSION is missing in "%VERSIONS_FILE%"
-  exit /b 1
-)
-
-if not defined MESON_VERSION (
-  echo MESON_VERSION is missing in "%VERSIONS_FILE%"
-  exit /b 1
-)
 
 where uv >nul 2>nul
 if errorlevel 1 (
@@ -76,7 +51,7 @@ if "%CROSS_MODE%"=="1" (
   set "CROSS_ARG=--cross"
 )
 
-set "MESON=uv tool run --python "%PYTHON_VERSION%" --from "meson==%MESON_VERSION%" --with ninja meson"
+set "MESON=uv run --group build meson"
 
 if /I "%TARGET%"=="distclean" goto do_distclean
 if /I "%TARGET%"=="configure" goto do_configure

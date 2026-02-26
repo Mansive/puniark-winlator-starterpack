@@ -3,19 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}"
-VERSIONS_FILE="${ROOT_DIR}/tools/tool-versions.env"
-
-if [[ ! -f "${VERSIONS_FILE}" ]]; then
-  printf 'Missing tool versions file: %s\n' "${VERSIONS_FILE}" >&2
-  exit 1
-fi
-
-source "${VERSIONS_FILE}"
-
-if [[ -z "${PYTHON_VERSION:-}" || -z "${MESON_VERSION:-}" ]]; then
-  printf 'PYTHON_VERSION and MESON_VERSION must be set in %s\n' "${VERSIONS_FILE}" >&2
-  exit 1
-fi
 
 if ! command -v uv >/dev/null 2>&1; then
   printf 'Could not find uv in PATH. Install uv and try again.\n' >&2
@@ -55,12 +42,9 @@ fi
 
 cd "${ROOT_DIR}"
 
-printf 'Installing Python %s with uv\n' "${PYTHON_VERSION}"
-uv python install "${PYTHON_VERSION}"
-
 if [[ -f "${build_dir}/build.ninja" ]]; then
   printf 'Reconfiguring Meson build directory: %s\n' "${build_dir}"
-  uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja \
+  uv run --group build \
     meson setup --reconfigure "${build_dir}" "${cross_args[@]}" "${passthrough[@]}"
 else
   printf 'Configuring Meson build directory: %s\n' "${build_dir}"
@@ -68,6 +52,6 @@ else
   if (( has_buildtype == 0 )); then
     setup_defaults+=(--buildtype release)
   fi
-  uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja \
+  uv run --group build \
     meson setup "${build_dir}" "${cross_args[@]}" "${setup_defaults[@]}" "${passthrough[@]}"
 fi
