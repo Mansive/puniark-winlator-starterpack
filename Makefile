@@ -1,11 +1,12 @@
 CROSS ?= 0
+CONFIGURE_ARGS ?=
 
 ifeq ($(CROSS),1)
-CONFIGURE_MODE := --cross
 MESON_BUILD_DIR := .meson/build/mingw-win32-linux
+CROSS_FILE_ARG := --cross-file meson/cross/mingw32.ini
 else
-CONFIGURE_MODE :=
 MESON_BUILD_DIR := .meson/build/mingw-win32-local
+CROSS_FILE_ARG :=
 endif
 
 MESON := uv run --group build meson
@@ -15,7 +16,13 @@ MESON := uv run --group build meson
 all: bundle
 
 configure:
-	bash ./configure $(CONFIGURE_MODE) $(CONFIGURE_ARGS)
+	@if [ -f "$(MESON_BUILD_DIR)/build.ninja" ]; then \
+		echo "Reconfiguring Meson build directory: $(MESON_BUILD_DIR)"; \
+		$(MESON) setup --reconfigure "$(MESON_BUILD_DIR)" $(CROSS_FILE_ARG) $(CONFIGURE_ARGS); \
+	else \
+		echo "Configuring Meson build directory: $(MESON_BUILD_DIR)"; \
+		$(MESON) setup "$(MESON_BUILD_DIR)" --buildtype release $(CROSS_FILE_ARG) $(CONFIGURE_ARGS); \
+	fi
 
 compile: configure
 	$(MESON) compile -C "$(MESON_BUILD_DIR)"

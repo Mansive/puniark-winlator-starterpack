@@ -14,31 +14,35 @@ Prerequisites:
 - Windows local build: `tools\build-bitnessscan-x86.bat`
 - Linux cross-build (Win32): `make CROSS=1`
 
-## Build wrappers
+## Build commands
 
-- `configure` / `configure.bat`: configure or reconfigure Meson build directories
-- `make` / `make.bat`: build commands (defaults to `bundle`)
-  - `bundle`: build executable and stage runtime assets to `build/`
-  - `compile`: build executable only
-  - `clean`: clean current Meson build directory
-  - `distclean`: remove local build and dist outputs
+`make` and `make.bat` wrap Meson + Ninja.
 
-On Linux, `make CROSS=1` runs cross-configure internally, so you do not need a separate `configure --cross` step.
+Targets:
+
+- `bundle` (default): build executable and stage runtime assets to `build/`
+- `compile`: build executable only
+- `configure`: configure or reconfigure the Meson build directory
+- `clean`: clean current Meson build directory
+- `test`: run Meson tests
+- `distclean`: remove local build and dist outputs
+
+Cross build mode:
+
+- Linux: add `CROSS=1` (for example `make CROSS=1 bundle`)
+- Windows batch: add `--cross` (for example `make.bat --cross bundle`)
+
+Pass Meson setup options through `CONFIGURE_ARGS`:
+
+- Linux: `make CROSS=1 CONFIGURE_ARGS='-Dfrida_version=17.7.3'`
+- Linux offline-friendly: `make CROSS=1 CONFIGURE_ARGS='-Ddownload_runtime_assets=false'`
+- Windows (cmd): `set CONFIGURE_ARGS=-Ddownload_runtime_assets=false && make.bat bundle`
 
 Direct uv usage (without wrappers):
 
-- `uv run --group build meson setup ...`
-- `uv run --group build meson compile -C <build-dir> bundle`
-
-Examples:
-
-- Local Windows configure + bundle:
-  - `configure.bat`
-  - `make.bat bundle`
-- Linux cross-build with custom Frida version:
-  - `make CROSS=1 CONFIGURE_ARGS='-Dfrida_version=17.7.3'`
-- Linux cross-build using cached assets only (offline-friendly):
-  - `make CROSS=1 CONFIGURE_ARGS='-Ddownload_runtime_assets=false'`
+- Local: `uv run --group build meson setup .meson/build/mingw-win32-local --buildtype release`
+- Cross: `uv run --group build meson setup .meson/build/mingw-win32-linux --buildtype release --cross-file meson/cross/mingw32.ini`
+- Build bundle: `uv run --group build meson compile -C .meson/build/mingw-win32-linux bundle`
 
 ## Output
 
