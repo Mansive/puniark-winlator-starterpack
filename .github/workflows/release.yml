@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Optional release version (for example v0.1.0).
+        description: Optional release version (must start with v, for example v0.1.0).
         required: false
         type: string
 

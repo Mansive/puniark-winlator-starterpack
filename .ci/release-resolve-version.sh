@@ -34,9 +34,6 @@ is_base_greater() {
 }
 
 raw_input="$(trim_whitespace "${INPUT_VERSION:-}")"
-if [[ -n "$raw_input" && "$raw_input" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-r[0-9]+)?$ ]]; then
-  raw_input="v${raw_input}"
-fi
 
 mapfile -t all_tags < <(git tag --list)
 semver_tags=()
@@ -51,7 +48,7 @@ done
 
 if [[ -n "$raw_input" ]]; then
   if ! is_semver_tag "$raw_input"; then
-    echo "::error::Invalid version input. Use vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-rN."
+    echo "::error::Invalid version input '${raw_input}'. Use vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-rN (must include leading 'v')."
     exit 1
   fi
   resolved="$raw_input"
