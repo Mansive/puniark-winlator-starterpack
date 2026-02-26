@@ -122,12 +122,5 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
           "${PROJECT_SOURCE_DIR}/tools/RUN_PICKER.bat"
           "${BITNESSSCAN_OUTPUT_DIR}/RUN_PICKER.bat"
-  COMMAND ${CMAKE_COMMAND} -E rm -f
-          "${BITNESSSCAN_OUTPUT_DIR}/build-bitnessscan-x86.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/run-bitnessscan.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/run-bitnessscan-picker.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/AUTOMATIC.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/RUN_AUTOMATIC.bat"
-          "${BITNESSSCAN_OUTPUT_DIR}/PICKER.bat"
   VERBATIM
 )
