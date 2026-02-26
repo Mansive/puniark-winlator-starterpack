@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-
 import argparse
 import filecmp
 import lzma
@@ -12,9 +10,13 @@ import urllib.error
 import urllib.request
 import zipfile
 
-UAL_BASE_URL = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download"
 FRIDA_BASE_URL = "https://github.com/frida/frida/releases/download"
+FRIDA_SUFFIXES = {
+    "win32": "x86",
+    "win64": "x86_64",
+}
 
+UAL_BASE_URL = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download"
 UAL_ARCHIVE_LAYOUT = {
     "win32": (
         "Win32-latest",
@@ -24,11 +26,6 @@ UAL_ARCHIVE_LAYOUT = {
         "x64-latest",
         ["d3d9-x64.zip", "d3d11-x64.zip", "d3d12-x64.zip", "version-x64.zip"],
     ),
-}
-
-FRIDA_SUFFIXES = {
-    "win32": "x86",
-    "win64": "x86_64",
 }
 
 
@@ -196,6 +193,7 @@ def stage_runtime_output(
 
     if not executable_path.exists():
         raise RuntimeError(f"Missing executable output: {executable_path}")
+
     copy_file_if_different(executable_path, output_root / "bitnessscan.exe")
 
     copy_ultimate_asi_loader_dlls(ual_download_root, output_root)
@@ -228,7 +226,7 @@ def main() -> int:
     source_root = Path(args.source_root).resolve()
     output_root = Path(args.output_root).resolve()
     executable_path = Path(args.exe_path).resolve()
-    frida_version = args.frida_version
+    frida_version: str = args.frida_version
     config_template = Path(args.config_template).resolve()
     run_auto_script = Path(args.run_auto).resolve()
     run_picker_script = Path(args.run_picker).resolve()
