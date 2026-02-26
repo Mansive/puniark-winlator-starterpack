@@ -69,7 +69,7 @@ Prerequisites:
 ### Quick start
 
 - Windows local build: `tools\build-bitnessscan-x86.bat`
-- Linux cross-build (Win32): `bash ./configure --cross && make CROSS=1`
+- Linux cross-build (Win32): `make CROSS=1`
 
 ### Build wrappers
 
@@ -91,11 +91,9 @@ Examples:
   - `configure.bat`
   - `make.bat bundle`
 - Linux cross-build with custom Frida version:
-  - `bash ./configure --cross -Dfrida_version=17.7.3`
-  - `make CROSS=1 bundle`
+  - `make CROSS=1 CONFIGURE_ARGS='-Dfrida_version=17.7.3'`
 - Linux cross-build using cached assets only (offline-friendly):
-  - `bash ./configure --cross -Ddownload_runtime_assets=false`
-  - `make CROSS=1 bundle`
+  - `make CROSS=1 CONFIGURE_ARGS='-Ddownload_runtime_assets=false'`
 
 ### Output
 
