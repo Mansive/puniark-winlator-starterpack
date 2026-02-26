@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Optional release version (for example v0.1.0).
+        required: false
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: release-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch tags
+        run: git fetch --force --tags
+
+      - name: Resolve release version
+        id: resolve_version
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: bash .ci/release-resolve-version.sh
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build mingw-w64 file python3 zip
+
+      - name: Configure
+        run: cmake --preset mingw-win32-linux
+
+      - name: Build
+        run: cmake --build --preset mingw-win32-linux
+
+      - name: Package build output
+        id: package
+        env:
+          VERSION: ${{ steps.resolve_version.outputs.version }}
+        run: bash .ci/release-package.sh
+
+      - name: Ensure release tag exists for this commit
+        env:
+          VERSION: ${{ steps.resolve_version.outputs.version }}
+        run: bash .ci/release-ensure-tag.sh
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.resolve_version.outputs.version }}
+          ASSET_PATH: ${{ steps.package.outputs.asset_path }}
+        run: bash .ci/release-publish.sh
