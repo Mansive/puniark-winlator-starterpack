@@ -71,8 +71,8 @@ download_runtime_assets = get_option('download_runtime_assets')
 source_root = meson.project_source_root()
 output_root = source_root / 'build'
 frida_config_template = files('src/frida/frida-gadget.config')[0]
-run_auto_script = files('tools/RUN_AUTO.bat')[0]
-run_picker_script = files('tools/RUN_PICKER.bat')[0]
+run_auto_script = files('tools/launchers/RUN_AUTO.bat')[0]
+run_picker_script = files('tools/launchers/RUN_PICKER.bat')[0]
 prepare_assets_script = files('tools/prepare_runtime_assets.py')[0]
 
 bundle_command = [
