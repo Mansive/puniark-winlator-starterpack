@@ -69,3 +69,7 @@ This document summarizes what is reliable and unreliable when detecting Windows 
 3. Use script-hosted COM paths only as optional conveniences, not core detection mechanisms.
 4. Favor deterministic contracts (exit code or temp file) over parsing command output text.
 5. Prioritize resilience over cleverness for tooling expected to run across many Wine prefixes.
+
+## TL;DR
+
+Avoid JScript, VBScript, and Go language. Wine isn't complete enough to handle them.
