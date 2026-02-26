@@ -1,0 +1,109 @@
+project(
+  'bitnessscan',
+  'cpp',
+  meson_version: '>=1.10.1',
+  default_options: ['cpp_std=c++23'],
+)
+
+cpp = meson.get_compiler('cpp')
+
+bitnessscan_sources = files(
+  'src/main.cpp',
+  'src/app.cpp',
+  'src/asset_deploy.cpp',
+  'src/cli_options.cpp',
+  'src/folder_picker.cpp',
+  'src/output.cpp',
+  'src/path_utils.cpp',
+  'src/pe_bitness.cpp',
+  'src/scan.cpp',
+  'src/win32_utils.cpp',
+)
+
+compile_args = []
+link_args = []
+
+if cpp.get_id() == 'gcc'
+  compile_args += [
+    '-Os',
+    '-municode',
+  ]
+  link_args += [
+    '-municode',
+    '-static',
+    '-static-libgcc',
+    '-static-libstdc++',
+  ]
+
+  buildtype = get_option('buildtype')
+  if buildtype == 'release' or buildtype == 'minsize'
+    compile_args += [
+      '-ffunction-sections',
+      '-fdata-sections',
+      '-flto',
+    ]
+    link_args += [
+      '-Wl,-s',
+      '-Wl,--gc-sections',
+      '-flto',
+    ]
+  endif
+endif
+
+win32_libraries = [
+  cpp.find_library('shell32', required: true),
+  cpp.find_library('ole32', required: true),
+  cpp.find_library('version', required: true),
+]
+
+bitnessscan_exe = executable(
+  'bitnessscan',
+  bitnessscan_sources,
+  dependencies: win32_libraries,
+  cpp_args: compile_args,
+  link_args: link_args,
+)
+
+python = import('python').find_installation(required: true)
+
+frida_version = get_option('frida_version')
+source_root = meson.project_source_root()
+output_root = source_root / 'build'
+frida_config_template = files('src/frida/frida-gadget.config')[0]
+run_auto_script = files('tools/RUN_AUTO.bat')[0]
+run_picker_script = files('tools/RUN_PICKER.bat')[0]
+prepare_assets_script = files('tools/prepare_runtime_assets.py')[0]
+
+prepare_runtime_assets = custom_target(
+  'prepare_runtime_assets',
+  input: [
+    bitnessscan_exe,
+    frida_config_template,
+    run_auto_script,
+    run_picker_script,
+  ],
+  output: 'prepare-runtime-assets.stamp',
+  command: [
+    python,
+    prepare_assets_script,
+    '--source-root',
+    source_root,
+    '--output-root',
+    output_root,
+    '--exe-path',
+    '@INPUT0@',
+    '--frida-version',
+    frida_version,
+    '--config-template',
+    '@INPUT1@',
+    '--run-auto',
+    '@INPUT2@',
+    '--run-picker',
+    '@INPUT3@',
+    '--stamp',
+    '@OUTPUT@',
+  ],
+  depend_files: [prepare_assets_script],
+  build_by_default: true,
+  build_always_stale: true,
+)

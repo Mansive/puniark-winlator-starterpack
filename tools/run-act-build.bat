@@ -3,8 +3,8 @@ setlocal
 
 set "SCRIPT_DIR=%~dp0"
 set "ROOT_DIR="
-if exist "%SCRIPT_DIR%..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%.."
-if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%..\.."
+if exist "%SCRIPT_DIR%..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%.."
+if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%..\.."
 
 if not defined ROOT_DIR (
   echo Could not locate project root from "%SCRIPT_DIR%"

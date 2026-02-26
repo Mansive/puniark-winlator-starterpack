@@ -1,0 +1,6 @@
+option(
+  'frida_version',
+  type: 'string',
+  value: '17.7.3',
+  description: 'Frida Gadget release version to bundle in build output',
+)

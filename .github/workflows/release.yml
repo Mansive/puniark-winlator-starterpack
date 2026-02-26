@@ -11,6 +11,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: "3.14.3"
+      MESON_VERSION: "1.10.1"
     permissions:
       contents: write
     concurrency:
@@ -35,13 +38,24 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build mingw-w64 file python3 zip
+          sudo apt-get install -y mingw-w64 file zip
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Python
+        run: uv python install "${PYTHON_VERSION}"
 
       - name: Configure
-        run: cmake --preset mingw-win32-linux
+        run: >-
+          uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja
+          meson setup --cross-file meson/cross/mingw32.ini --buildtype release
+          .meson/build/mingw-win32-linux
 
       - name: Build
-        run: cmake --build --preset mingw-win32-linux
+        run: >-
+          uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja
+          meson compile -C .meson/build/mingw-win32-linux
 
       - name: Package build output
         id: package

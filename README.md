@@ -55,6 +55,17 @@ Examples:
 
 This avoids relying on Wine XMLHTTP binary response behavior, which can return inconsistent results for some files.
 
+## Build bitnessscan (Dev)
+
+The starter pack build now uses Meson, invoked through `uv` with pinned tool versions.
+
+- Python: `3.14.3`
+- Meson: `1.10.1`
+- Backend: `ninja`
+- Local Windows build (MinGW): `tools\build-bitnessscan-x86.bat`
+
+Build output is staged to `build/` (including `bitnessscan.exe`, `win32/`, `win64/`, and run scripts).
+
 ## Local CI (Dev)
 
 To run the GitHub Actions build job locally with `act`, use:
