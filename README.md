@@ -1,6 +1,6 @@
 # PuniArk Winlator Starter Pack
 
-This repo contains resources and instructions on making Winlator and Winlator-based apps (GameNative, GameHub, GameHub Lite) compatible with PuniArk. It's not convenient, but at least you only need to perform simple copy-pastes once per game.
+This repo contains resources and instructions on making Winlator and Winlator-based apps ([GameNative](https://github.com/utkarshdalal/GameNative), [GameHub](https://gamehub.xiaoji.com/), [GameHub Lite](https://github.com/Producdevity/gamehub-lite)) compatible with PuniArk. It's not convenient, but at least you only need to perform simple copy-pastes once per game.
 
 ## Guide
 

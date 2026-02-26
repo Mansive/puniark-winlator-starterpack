@@ -5,8 +5,8 @@ Pinned versions are defined in `pyproject.toml` (`[dependency-groups].build`) an
 
 Prerequisites:
 
-- `uv`
-- Windows local build: MinGW (`g++`) in `PATH`
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- Windows: [MSYS2](https://www.msys2.org/)
 - Linux cross-build: `mingw-w64` and `make`
 
 ## Quick start
@@ -58,5 +58,3 @@ Direct uv usage (without wrappers):
 To run the GitHub Actions build job locally with `act`, use:
 
 - `tools\run-act-build.bat`
-
-This wrapper runs the `linux-cross-win32` job from `.github/workflows/build.yml`.
