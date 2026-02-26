@@ -34,27 +34,6 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 >
 > This will make the starter pack folder appear as a selectable drive in the side menu in the container, reducing the amount of clicks needed to navigate to the folder.
 
-## PE Bitness Helper (Dev)
+## Building
 
-The local `test.js` helper script uses `executables/pebitness.exe` to detect whether an `.exe` is 32-bit or 64-bit.
-
-- Source: `executables/pebitness.c`
-- Build (x86): run `executables\build-pebitness-x86.bat`
-- Exit codes: `32` for 32-bit, `64` for 64-bit, `1` for unknown format
-
-The helper binary is built locally and ignored by git (`executables/pebitness.exe`).
-
-Examples:
-
-- Scan `.exe` files in the same folder as `test.js`:
-  - `cscript //nologo test.js`
-- Check specific files:
-  - `cscript //nologo test.js "A:\Atelier Sophie DX.exe" "A:\Game.exe"`
-- Enable debug logs:
-  - `cscript //nologo test.js --debug`
-
-This avoids relying on Wine XMLHTTP binary response behavior, which can return inconsistent results for some files.
-
-## Build bitnessscan (Dev)
-
-Build instructions are in `[build.md](docs/build.md)`.
+See the `[build guide](docs/build.md)`.
