@@ -29,8 +29,7 @@ Targets:
 
 Cross build mode:
 
-- Linux: add `CROSS=1` (for example `make CROSS=1 bundle`)
-- Windows batch: add `--cross` (for example `make.bat --cross bundle`)
+- Linux/CI: add `CROSS=1` (for example `make CROSS=1 bundle`)
 
 Pass Meson setup options through `CONFIGURE_ARGS`:
 

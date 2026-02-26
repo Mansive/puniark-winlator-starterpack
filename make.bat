@@ -12,13 +12,10 @@ if errorlevel 1 (
 )
 
 set "TARGET=bundle"
-set "CROSS_MODE=0"
 
 :parse_args
 if "%~1"=="" goto args_done
-if /I "%~1"=="--cross" (
-  set "CROSS_MODE=1"
-) else if /I "%~1"=="all" (
+if /I "%~1"=="all" (
   set "TARGET=bundle"
 ) else if /I "%~1"=="bundle" (
   set "TARGET=bundle"
@@ -41,11 +38,6 @@ goto parse_args
 
 :args_done
 set "BUILD_DIR=%ROOT_DIR%\.meson\build\mingw-win32-local"
-set "CROSS_ARGS="
-if "%CROSS_MODE%"=="1" (
-  set "BUILD_DIR=%ROOT_DIR%\.meson\build\mingw-win32-linux"
-  set "CROSS_ARGS=--cross-file meson/cross/mingw32.ini"
-)
 
 set "MESON=uv run --group build meson"
 set "EXIT_CODE=0"
@@ -73,10 +65,10 @@ goto done
 :configure
 if exist "%BUILD_DIR%\build.ninja" (
   echo Reconfiguring Meson build directory: %BUILD_DIR%
-  %MESON% setup --reconfigure "%BUILD_DIR%" %CROSS_ARGS% %CONFIGURE_ARGS%
+  %MESON% setup --reconfigure "%BUILD_DIR%" %CONFIGURE_ARGS%
 ) else (
   echo Configuring Meson build directory: %BUILD_DIR%
-  %MESON% setup "%BUILD_DIR%" --buildtype release %CROSS_ARGS% %CONFIGURE_ARGS%
+  %MESON% setup "%BUILD_DIR%" --buildtype release %CONFIGURE_ARGS%
 )
 exit /b %ERRORLEVEL%
 
