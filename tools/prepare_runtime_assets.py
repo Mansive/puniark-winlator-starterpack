@@ -216,7 +216,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config-template", required=True)
     parser.add_argument("--run-auto", required=True)
     parser.add_argument("--run-picker", required=True)
-    parser.add_argument("--stamp", required=True)
+    parser.add_argument(
+        "--skip-downloads",
+        action="store_true",
+        help="Skip downloading runtime assets and use local cache only",
+    )
+    parser.add_argument("--stamp")
     return parser.parse_args()
 
 
@@ -230,7 +235,7 @@ def main() -> int:
     config_template = Path(args.config_template).resolve()
     run_auto_script = Path(args.run_auto).resolve()
     run_picker_script = Path(args.run_picker).resolve()
-    stamp_path = Path(args.stamp).resolve()
+    stamp_path = Path(args.stamp).resolve() if args.stamp else None
 
     ual_download_root = source_root / "downloads" / "ultimate-asi-loader"
     frida_download_root = source_root / "downloads" / "frida"
@@ -243,8 +248,12 @@ def main() -> int:
         if not run_picker_script.exists():
             raise RuntimeError(f"Missing run script: {run_picker_script}")
 
-        prepare_ultimate_asi_loader(ual_download_root)
-        prepare_frida_gadget(frida_download_root, frida_version)
+        if args.skip_downloads:
+            log("Skipping asset downloads, using local cache only")
+        else:
+            prepare_ultimate_asi_loader(ual_download_root)
+            prepare_frida_gadget(frida_download_root, frida_version)
+
         stage_runtime_output(
             output_root=output_root,
             executable_path=executable_path,
@@ -255,7 +264,9 @@ def main() -> int:
             ual_download_root=ual_download_root,
             frida_download_root=frida_download_root,
         )
-        touch_stamp(stamp_path)
+
+        if stamp_path is not None:
+            touch_stamp(stamp_path)
     except Exception as error:
         print(f"error: {error}", file=sys.stderr)
         return 1

@@ -67,6 +67,7 @@ bitnessscan_exe = executable(
 python = import('python').find_installation(required: true)
 
 frida_version = get_option('frida_version')
+download_runtime_assets = get_option('download_runtime_assets')
 source_root = meson.project_source_root()
 output_root = source_root / 'build'
 frida_config_template = files('src/frida/frida-gadget.config')[0]
@@ -74,36 +75,31 @@ run_auto_script = files('tools/RUN_AUTO.bat')[0]
 run_picker_script = files('tools/RUN_PICKER.bat')[0]
 prepare_assets_script = files('tools/prepare_runtime_assets.py')[0]
 
-prepare_runtime_assets = custom_target(
-  'prepare_runtime_assets',
-  input: [
-    bitnessscan_exe,
-    frida_config_template,
-    run_auto_script,
-    run_picker_script,
-  ],
-  output: 'prepare-runtime-assets.stamp',
-  command: [
-    python,
-    prepare_assets_script,
-    '--source-root',
-    source_root,
-    '--output-root',
-    output_root,
-    '--exe-path',
-    '@INPUT0@',
-    '--frida-version',
-    frida_version,
-    '--config-template',
-    '@INPUT1@',
-    '--run-auto',
-    '@INPUT2@',
-    '--run-picker',
-    '@INPUT3@',
-    '--stamp',
-    '@OUTPUT@',
-  ],
-  depend_files: [prepare_assets_script],
-  build_by_default: true,
-  build_always_stale: true,
+bundle_command = [
+  python,
+  prepare_assets_script,
+  '--source-root',
+  source_root,
+  '--output-root',
+  output_root,
+  '--exe-path',
+  bitnessscan_exe,
+  '--frida-version',
+  frida_version,
+  '--config-template',
+  frida_config_template,
+  '--run-auto',
+  run_auto_script,
+  '--run-picker',
+  run_picker_script,
+]
+
+if not download_runtime_assets
+  bundle_command += ['--skip-downloads']
+endif
+
+run_target(
+  'bundle',
+  command: bundle_command,
+  depends: [bitnessscan_exe],
 )

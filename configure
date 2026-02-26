@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="${SCRIPT_DIR}"
+VERSIONS_FILE="${ROOT_DIR}/tools/tool-versions.env"
+
+if [[ ! -f "${VERSIONS_FILE}" ]]; then
+  printf 'Missing tool versions file: %s\n' "${VERSIONS_FILE}" >&2
+  exit 1
+fi
+
+source "${VERSIONS_FILE}"
+
+if [[ -z "${PYTHON_VERSION:-}" || -z "${MESON_VERSION:-}" ]]; then
+  printf 'PYTHON_VERSION and MESON_VERSION must be set in %s\n' "${VERSIONS_FILE}" >&2
+  exit 1
+fi
+
+if ! command -v uv >/dev/null 2>&1; then
+  printf 'Could not find uv in PATH. Install uv and try again.\n' >&2
+  exit 1
+fi
+
+cross_mode=0
+declare -a passthrough=()
+
+for arg in "$@"; do
+  if [[ "${arg}" == "--cross" ]]; then
+    cross_mode=1
+  else
+    passthrough+=("${arg}")
+  fi
+done
+
+build_dir='.meson/build/mingw-win32-local'
+declare -a cross_args=()
+if (( cross_mode == 1 )); then
+  build_dir='.meson/build/mingw-win32-linux'
+  cross_args+=(--cross-file meson/cross/mingw32.ini)
+fi
+
+has_buildtype=0
+has_cross_file=0
+for arg in "${passthrough[@]}"; do
+  case "${arg}" in
+    --buildtype|--buildtype=*) has_buildtype=1 ;;
+    --cross-file|--cross-file=*) has_cross_file=1 ;;
+  esac
+done
+
+if (( cross_mode == 1 && has_cross_file == 1 )); then
+  cross_args=()
+fi
+
+cd "${ROOT_DIR}"
+
+printf 'Installing Python %s with uv\n' "${PYTHON_VERSION}"
+uv python install "${PYTHON_VERSION}"
+
+if [[ -f "${build_dir}/build.ninja" ]]; then
+  printf 'Reconfiguring Meson build directory: %s\n' "${build_dir}"
+  uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja \
+    meson setup --reconfigure "${build_dir}" "${cross_args[@]}" "${passthrough[@]}"
+else
+  printf 'Configuring Meson build directory: %s\n' "${build_dir}"
+  declare -a setup_defaults=()
+  if (( has_buildtype == 0 )); then
+    setup_defaults+=(--buildtype release)
+  fi
+  uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja \
+    meson setup "${build_dir}" "${cross_args[@]}" "${setup_defaults[@]}" "${passthrough[@]}"
+fi

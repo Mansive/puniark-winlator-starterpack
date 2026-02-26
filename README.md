@@ -57,14 +57,50 @@ This avoids relying on Wine XMLHTTP binary response behavior, which can return i
 
 ## Build bitnessscan (Dev)
 
-The starter pack build now uses Meson, invoked through `uv` with pinned tool versions.
+The project uses Meson + Ninja, wrapped by helper scripts.
+Pinned versions are defined in `tools/tool-versions.env`.
 
-- Python: `3.14.3`
-- Meson: `1.10.1`
-- Backend: `ninja`
-- Local Windows build (MinGW): `tools\build-bitnessscan-x86.bat`
+Prerequisites:
 
-Build output is staged to `build/` (including `bitnessscan.exe`, `win32/`, `win64/`, and run scripts).
+- `uv`
+- Windows local build: MinGW (`g++`) in `PATH`
+- Linux cross-build: `mingw-w64` and `make`
+
+### Quick start
+
+- Windows local build: `tools\build-bitnessscan-x86.bat`
+- Linux cross-build (Win32): `bash ./configure --cross && make CROSS=1`
+
+### Build wrappers
+
+- `configure` / `configure.bat`: configure or reconfigure Meson build directories
+- `make` / `make.bat`: build commands (defaults to `bundle`)
+  - `bundle`: build executable and stage runtime assets to `build/`
+  - `compile`: build executable only
+  - `clean`: clean current Meson build directory
+  - `distclean`: remove local build and dist outputs
+
+Examples:
+
+- Local Windows configure + bundle:
+  - `configure.bat`
+  - `make.bat bundle`
+- Linux cross-build with custom Frida version:
+  - `bash ./configure --cross -Dfrida_version=17.7.3`
+  - `make CROSS=1 bundle`
+- Linux cross-build using cached assets only (offline-friendly):
+  - `bash ./configure --cross -Ddownload_runtime_assets=false`
+  - `make CROSS=1 bundle`
+
+### Output
+
+`bundle` stages files to `build/`:
+
+- `build/bitnessscan.exe`
+- `build/win32/`
+- `build/win64/`
+- `build/RUN_AUTO.bat`
+- `build/RUN_PICKER.bat`
 
 ## Local CI (Dev)
 

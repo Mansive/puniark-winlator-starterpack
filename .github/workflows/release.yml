@@ -11,9 +11,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      PYTHON_VERSION: "3.14.3"
-      MESON_VERSION: "1.10.1"
     permissions:
       contents: write
     concurrency:
@@ -43,19 +40,8 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Install Python
-        run: uv python install "${PYTHON_VERSION}"
-
-      - name: Configure
-        run: >-
-          uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja
-          meson setup --cross-file meson/cross/mingw32.ini --buildtype release
-          .meson/build/mingw-win32-linux
-
       - name: Build
-        run: >-
-          uv tool run --python "${PYTHON_VERSION}" --from "meson==${MESON_VERSION}" --with ninja
-          meson compile -C .meson/build/mingw-win32-linux
+        run: make CROSS=1
 
       - name: Package build output
         id: package
