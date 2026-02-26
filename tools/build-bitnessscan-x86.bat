@@ -1,5 +1,6 @@
 @echo off
 setlocal
+set "EXIT_CODE=1"
 
 set "SCRIPT_DIR=%~dp0"
 set "ROOT_DIR="
@@ -8,7 +9,8 @@ if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\meson.build" set "ROOT_DIR=%
 
 if not defined ROOT_DIR (
   echo Could not locate project root from "%SCRIPT_DIR%"
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
@@ -21,7 +23,8 @@ where uv >nul 2>nul
 if errorlevel 1 (
   echo Could not find uv in PATH.
   echo Install uv and try again.
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 pushd "%ROOT_DIR%" >nul
@@ -32,7 +35,8 @@ if exist "%BUILD_DIR%\build.ninja" (
   if errorlevel 1 (
     popd >nul
     echo Reconfigure failed.
-    exit /b 1
+    set "EXIT_CODE=1"
+    goto :end
   )
 ) else (
   echo Configuring Meson build directory: %BUILD_DIR%
@@ -40,7 +44,8 @@ if exist "%BUILD_DIR%\build.ninja" (
   if errorlevel 1 (
     popd >nul
     echo Configure failed.
-    exit /b 1
+    set "EXIT_CODE=1"
+    goto :end
   )
 )
 
@@ -49,15 +54,24 @@ uv tool run --python "%PYTHON_VERSION%" --from "meson==%MESON_VERSION%" --with n
 if errorlevel 1 (
   popd >nul
   echo Build failed.
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 popd >nul
 
 if not exist "%OUTPUT%" (
   echo Build completed but output is missing: "%OUTPUT%"
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 echo Built %OUTPUT%
-exit /b 0
+set "EXIT_CODE=0"
+
+:end
+if not defined NO_PAUSE if not defined CI (
+  echo.
+  pause
+)
+exit /b %EXIT_CODE%
