@@ -30,7 +30,7 @@ jobs:
         id: resolve_version
         env:
           INPUT_VERSION: ${{ github.event.inputs.version }}
-        run: bash .ci/release-resolve-version.sh
+        run: ./.ci/release-resolve-version.sh
 
       - name: Install dependencies
         run: |
@@ -47,16 +47,16 @@ jobs:
         id: package
         env:
           VERSION: ${{ steps.resolve_version.outputs.version }}
-        run: bash .ci/release-package.sh
+        run: ./.ci/release-package.sh
 
       - name: Ensure release tag exists for this commit
         env:
           VERSION: ${{ steps.resolve_version.outputs.version }}
-        run: bash .ci/release-ensure-tag.sh
+        run: ./.ci/release-ensure-tag.sh
 
       - name: Create or update GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.resolve_version.outputs.version }}
           ASSET_PATH: ${{ steps.package.outputs.asset_path }}
-        run: bash .ci/release-publish.sh
+        run: ./.ci/release-publish.sh
