@@ -2,6 +2,8 @@ build/
 downloads/
 executables/
 
+.meson/
+.venv/
 .cmake/
 .act-artifacts/
 

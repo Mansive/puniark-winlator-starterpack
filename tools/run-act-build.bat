@@ -1,14 +1,16 @@
 @echo off
 setlocal
+set "EXIT_CODE=1"
 
 set "SCRIPT_DIR=%~dp0"
 set "ROOT_DIR="
-if exist "%SCRIPT_DIR%..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%.."
-if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%..\.."
+if exist "%SCRIPT_DIR%..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%.."
+if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%..\.."
 
 if not defined ROOT_DIR (
   echo Could not locate project root from "%SCRIPT_DIR%"
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
@@ -17,14 +19,16 @@ where act >nul 2>nul
 if errorlevel 1 (
   echo Could not find act in PATH.
   echo Install act and try again.
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 where docker >nul 2>nul
 if errorlevel 1 (
   echo Could not find docker in PATH.
   echo Install Docker Desktop and try again.
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 pushd "%ROOT_DIR%" >nul
@@ -37,8 +41,15 @@ popd >nul
 
 if not "%EXIT_CODE%"=="0" (
   echo act run failed with exit code %EXIT_CODE%.
-  exit /b %EXIT_CODE%
+  goto :end
 )
 
 echo act run completed successfully.
-exit /b 0
+set "EXIT_CODE=0"
+
+:end
+if not defined NO_PAUSE if not defined CI (
+  echo.
+  pause
+)
+exit /b %EXIT_CODE%

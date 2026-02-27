@@ -1,51 +1,46 @@
 @echo off
 setlocal
+set "EXIT_CODE=1"
 
 set "SCRIPT_DIR=%~dp0"
 set "ROOT_DIR="
-if exist "%SCRIPT_DIR%..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%.."
-if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\CMakeLists.txt" set "ROOT_DIR=%SCRIPT_DIR%..\.."
+if exist "%SCRIPT_DIR%..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%.."
+if not defined ROOT_DIR if exist "%SCRIPT_DIR%..\..\meson.build" set "ROOT_DIR=%SCRIPT_DIR%..\.."
 
 if not defined ROOT_DIR (
   echo Could not locate project root from "%SCRIPT_DIR%"
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 for %%I in ("%ROOT_DIR%") do set "ROOT_DIR=%%~fI"
-set "PRESET=mingw-win32-local"
 set "OUTPUT=%ROOT_DIR%\build\bitnessscan.exe"
 
-where cmake >nul 2>nul
-if errorlevel 1 (
-  echo Could not find cmake in PATH.
-  echo Install CMake and try again.
-  exit /b 1
+if not exist "%ROOT_DIR%\make.bat" (
+  echo Missing build wrapper: "%ROOT_DIR%\make.bat"
+  set "EXIT_CODE=1"
+  goto :end
 )
 
-pushd "%ROOT_DIR%" >nul
-
-echo Configuring with CMake preset: %PRESET%
-cmake --preset "%PRESET%"
+call "%ROOT_DIR%\make.bat" bundle
 if errorlevel 1 (
-  popd >nul
-  echo Configure failed.
-  exit /b 1
-)
-
-echo Building with CMake preset: %PRESET%
-cmake --build --preset "%PRESET%"
-if errorlevel 1 (
-  popd >nul
   echo Build failed.
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
-
-popd >nul
 
 if not exist "%OUTPUT%" (
   echo Build completed but output is missing: "%OUTPUT%"
-  exit /b 1
+  set "EXIT_CODE=1"
+  goto :end
 )
 
 echo Built %OUTPUT%
-exit /b 0
+set "EXIT_CODE=0"
+
+:end
+if not defined NO_PAUSE if not defined CI (
+  echo.
+  pause
+)
+exit /b %EXIT_CODE%

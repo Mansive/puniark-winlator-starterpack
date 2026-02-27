@@ -30,33 +30,33 @@ jobs:
         id: resolve_version
         env:
           INPUT_VERSION: ${{ github.event.inputs.version }}
-        run: bash .ci/release-resolve-version.sh
+        run: ./.ci/release-resolve-version.sh
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build mingw-w64 file python3 zip
+          sudo apt-get install -y mingw-w64 file zip
 
-      - name: Configure
-        run: cmake --preset mingw-win32-linux
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Build
-        run: cmake --build --preset mingw-win32-linux
+        run: make CROSS=1
 
       - name: Package build output
         id: package
         env:
           VERSION: ${{ steps.resolve_version.outputs.version }}
-        run: bash .ci/release-package.sh
+        run: ./.ci/release-package.sh
 
       - name: Ensure release tag exists for this commit
         env:
           VERSION: ${{ steps.resolve_version.outputs.version }}
-        run: bash .ci/release-ensure-tag.sh
+        run: ./.ci/release-ensure-tag.sh
 
       - name: Create or update GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.resolve_version.outputs.version }}
           ASSET_PATH: ${{ steps.package.outputs.asset_path }}
-        run: bash .ci/release-publish.sh
+        run: ./.ci/release-publish.sh

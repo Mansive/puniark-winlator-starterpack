@@ -1,0 +1,13 @@
+option(
+  'frida_version',
+  type: 'string',
+  value: '17.7.3',
+  description: 'Frida Gadget release version to bundle in build output',
+)
+
+option(
+  'download_runtime_assets',
+  type: 'boolean',
+  value: true,
+  description: 'Allow bundle target to download runtime assets if missing',
+)

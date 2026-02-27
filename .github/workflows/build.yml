@@ -18,13 +18,13 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build mingw-w64 file python3
+          sudo apt-get install -y mingw-w64 file
 
-      - name: Configure
-        run: cmake --preset mingw-win32-linux
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Build
-        run: cmake --build --preset mingw-win32-linux
+        run: make CROSS=1
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v6
