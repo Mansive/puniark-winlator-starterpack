@@ -36,4 +36,4 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 
 ## Building
 
-See the `[build guide](docs/build.md)`.
+See the [build guide](docs/build.md).
