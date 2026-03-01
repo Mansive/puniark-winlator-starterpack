@@ -27,11 +27,7 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 
 ## Video Demo
 
-<video width="640" height="360" controls preload="metadata">
-  <source src="./assets/Puniark-Gamenative-Demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-  <a href="./assets/Puniark-Gamenative-Demo.mp4">Download/watch the demo video</a>.
-</video>
+https://github.com/user-attachments/assets/2cc34143-7a49-4e3e-b49c-1cc34287215d
 
 ## How does this work?
 
