@@ -25,6 +25,10 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 >
 > This will make the starter pack folder appear as drive `F:` in the side menu in the container, reducing the amount of clicks needed to navigate to the folder.
 
+## Video Demo
+
+![](./assets/Puniark-Gamenative-Demo.mp4)
+
 ## How does this work?
 
 There needs to be a way for PuniArk to control another app's memory. However, Android has security measures in place to prevent this sort of situation where apps can arbitrarily control other apps. We can bypass them by injecting [`frida-gadget`](https://frida.re/docs/gadget/) into the app, such that whenever the app launches, it also launches a Frida server. PuniArk can then connect to this special server and extract text from the app.
