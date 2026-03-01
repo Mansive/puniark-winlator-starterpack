@@ -1,7 +1,6 @@
 # Build bitnessscan (Dev)
 
-The project uses Meson + Ninja, wrapped by helper scripts.
-Pinned versions are defined in `pyproject.toml` (`[dependency-groups].build`) and locked in `uv.lock`.
+The project uses [Meson](https://github.com/mesonbuild/meson) and [Ninja](https://github.com/ninja-build/ninja).
 
 Prerequisites:
 
@@ -11,7 +10,7 @@ Prerequisites:
 
 ## Quick start
 
-- Windows local build: `tools\build-bitnessscan-x86.bat`
+- Windows local build: [`tools\build-bitnessscan-x86.bat`](../tools/build-bitnessscan-x86.bat)
 - Linux cross-build (Win32): `make CROSS=1`
 
 ## Build commands
@@ -57,4 +56,4 @@ Direct uv usage (without wrappers):
 
 To run the GitHub Actions build job locally with `act`, use:
 
-- `tools\run-act-build.bat`
+- [`tools/run-act-build.bat`](../tools/run-act-build.bat)
