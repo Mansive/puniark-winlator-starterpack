@@ -5,9 +5,9 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 ## Guide
 
 1. Download the [starter pack zip archive](https://github.com/Mansive/puniark-winlator-starterpack/releases/latest) and extract its contents into your Android device's `Downloads` folder.
-2. Open the emulator, select a game, then enter its container
+2. Open the emulator, select a game, then enter its container.
    - GameNative: Select the game, press the top-right icon with the three dots, then `Open container`.
-   - On GameHub (Lite): Select the game, press the icon with the three dots, press `PC Game Settings`, then `Enter Container Desktop`. This option may be unavailable if you imported your game instead of downloading through Steam.
+   - GameHub (Lite): Select the game, press the icon with the three dots, press `PC Game Settings`, then `Enter Container Desktop`. This option may be unavailable if you imported your game instead of downloading through Steam.
 3. In the container, navigate to the `D:` drive and open the folder containing the starter pack contents.
 4. Run one of the `RUN` scripts.
    - Use `RUN_AUTO.bat` if your game is located in drives `A:` or `X:`. This will always be the case if you're using GameNative. It'll work for GameHub if the game is from your Steam account.
