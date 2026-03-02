@@ -16,7 +16,7 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 6. If PuniArk connects, you can exit the container and launch the game normally.
 
 > [!TIP]
-> If you're using GameNative, you can make easier to navigate to the starter pack folder with the following:
+> If you're using GameNative, make it easier to navigate to the starter pack folder with the following:
 > 1. Press your profile picture in the top-right corner
 > 2. Navigate `Settings` -> `Modify Default Config` -> `Drives`
 > 3. Press the `+` icon at the bottom
