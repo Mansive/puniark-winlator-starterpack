@@ -4,16 +4,19 @@ This repo contains resources and instructions on making Winlator and Winlator-ba
 
 ## Guide
 
-1. Download the [starter pack zip archive](https://github.com/Mansive/puniark-winlator-starterpack/releases/latest) and extract its contents into your Android device's `Downloads` folder.
-2. Enter the emulation container.
+You'll first need to download the [starter pack zip archive](https://github.com/Mansive/puniark-winlator-starterpack/releases/latest) and extract its contents into your Android device's `Downloads` folder.
+
+The following steps have to be done for each game:
+
+1. Enter the emulation container.
    - GameNative: Select the game, press the top-right icon with the three dots, then `Open container`.
    - GameHub (Lite): Select the game, press the icon with the three dots, press `PC Game Settings`, then `Enter Container Desktop`. This option may be unavailable if you imported your game instead of downloading through Steam.
-3. In the container, navigate to the `D:` drive and open the folder containing the starter pack contents.
-4. Run one of the `RUN` scripts.
+2. In the container, navigate to the `D:` drive and open the folder containing the starter pack contents.
+3. Run one of the `RUN` scripts.
    - Use `RUN_AUTO.bat` if your game is located in drives `A:` or `X:`. This will always be the case if you're using GameNative. It'll work for GameHub if the game is from your Steam account.
    - Use `RUN_PICKER.bat` to select your game folder. This should be used if the game is stored somewhere other than `A:` or `X:`.
-5. While in the container, launch the game and see if PuniArk can connect to it.
-6. If PuniArk connects, you can exit the container and launch the game normally.
+4. While in the container, launch the game and see if PuniArk can connect to it.
+5. If PuniArk connects, you can exit the container and launch the game normally.
 
 > [!TIP]
 > If you're using GameNative, make it easier to navigate to the starter pack folder with the following:
@@ -63,3 +66,7 @@ I've tried making the DLL setup as simple as possible, but there's still usabili
 ## Building
 
 See the [build guide](docs/build.md).
+
+## Cursed Stuff
+
+See the [document](docs/exe-bitness-in-wine.md).
